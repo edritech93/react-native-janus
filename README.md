@@ -1,22 +1,10 @@
 # react-native-janus
 
-janus for react-native
+Janus Gateway for React Native
 
-## Installation
+for testing:
 
-```sh
-npm install react-native-janus
-```
-
-## Usage
-
-```js
-import { multiply } from 'react-native-janus';
-
-// ...
-
-const result = await multiply(3, 7);
-```
+clone and run example
 
 ## Contributing
 
