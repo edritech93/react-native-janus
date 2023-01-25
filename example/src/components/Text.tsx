@@ -1,25 +1,26 @@
 import * as React from 'react';
-import {Text as DefaultText, StyleSheet, TextProps} from 'react-native';
-import {moderateScale} from '../libs/scaling';
-import {useTheme} from 'react-native-paper';
-import {Fonts} from '../themes';
+import { Text as DefaultText, StyleSheet, TextProps } from 'react-native';
+import { moderateScale } from '../libs/scaling';
+import { useTheme } from 'react-native-paper';
+import { Fonts } from '../themes';
 
 interface IText extends TextProps {}
 
 export const Text = (props: IText) => {
-  const {children, style, ...restProps} = props;
-  const {colors} = useTheme();
+  const { children, style, ...restProps } = props;
+  const { colors } = useTheme();
   return (
     <DefaultText
-      style={[styles.textStyle, {color: colors.onBackground}, style]}
-      {...restProps}>
+      style={[styles.textStyle, { color: colors.onBackground }, style]}
+      {...restProps}
+    >
       {children}
     </DefaultText>
   );
 };
 
 export const Title = (props: IText) => {
-  const {children, style, ...restProps} = props;
+  const { children, style, ...restProps } = props;
   return (
     <Text style={[styles.titleStyle, style]} {...restProps}>
       {children}

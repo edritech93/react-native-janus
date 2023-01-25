@@ -1,4 +1,4 @@
-import {Platform, Alert} from 'react-native';
+import { Platform, Alert } from 'react-native';
 import {
   PERMISSIONS,
   openSettings,
@@ -13,7 +13,7 @@ const MSG_PERMISSION_UNAVAILABLE = 'Permission Unavailable';
 
 export async function getPermissionCamera() {
   if (Platform.OS === 'ios') {
-    await check(PERMISSIONS.IOS.CAMERA).then(async status => {
+    await check(PERMISSIONS.IOS.CAMERA).then(async (status) => {
       if (status === RESULTS.GRANTED) {
         return RESULTS.GRANTED;
       } else if (status === RESULTS.DENIED) {
@@ -27,7 +27,7 @@ export async function getPermissionCamera() {
       }
     });
   } else if (Platform.OS === 'android') {
-    await check(PERMISSIONS.ANDROID.CAMERA).then(async status => {
+    await check(PERMISSIONS.ANDROID.CAMERA).then(async (status) => {
       if (status === RESULTS.GRANTED) {
         return RESULTS.GRANTED;
       } else if (status === RESULTS.DENIED) {
@@ -47,7 +47,7 @@ export async function getPermissionCamera() {
 
 export async function getPermissionMicrophone() {
   if (Platform.OS === 'ios') {
-    await check(PERMISSIONS.IOS.MICROPHONE).then(async status => {
+    await check(PERMISSIONS.IOS.MICROPHONE).then(async (status) => {
       if (status === RESULTS.GRANTED) {
         return RESULTS.GRANTED;
       } else if (status === RESULTS.DENIED) {
@@ -61,7 +61,7 @@ export async function getPermissionMicrophone() {
       }
     });
   } else if (Platform.OS === 'android') {
-    await check(PERMISSIONS.ANDROID.RECORD_AUDIO).then(async status => {
+    await check(PERMISSIONS.ANDROID.RECORD_AUDIO).then(async (status) => {
       if (status === RESULTS.GRANTED) {
         return RESULTS.GRANTED;
       } else if (status === RESULTS.DENIED) {
@@ -81,7 +81,7 @@ export async function getPermissionMicrophone() {
 
 export async function getPermissionReadStorage() {
   if (Platform.OS === 'ios') {
-    await check(PERMISSIONS.IOS.PHOTO_LIBRARY).then(async status => {
+    await check(PERMISSIONS.IOS.PHOTO_LIBRARY).then(async (status) => {
       if (status === RESULTS.GRANTED) {
         return RESULTS.GRANTED;
       } else if (status === RESULTS.DENIED) {
@@ -96,7 +96,7 @@ export async function getPermissionReadStorage() {
     });
   } else if (Platform.OS === 'android') {
     await check(PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE).then(
-      async status => {
+      async (status) => {
         if (status === RESULTS.GRANTED) {
           return RESULTS.GRANTED;
         } else if (status === RESULTS.DENIED) {
@@ -108,7 +108,7 @@ export async function getPermissionReadStorage() {
           _showAlertBlocked('Read Storage');
           return null;
         }
-      },
+      }
     );
   } else {
     return MSG_PERMISSION_BLOCKED;
@@ -120,19 +120,21 @@ export async function getPermissionWriteStorage() {
   if (Platform.OS !== 'android') {
     return;
   }
-  await check(PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE).then(async status => {
-    if (status === RESULTS.GRANTED) {
-      return RESULTS.GRANTED;
-    } else if (status === RESULTS.DENIED) {
-      return await request(PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE);
-    } else if (status === RESULTS.UNAVAILABLE) {
-      _showAlertUnavailable('Write Storage');
-      return RESULTS.UNAVAILABLE;
-    } else {
-      _showAlertBlocked('Write Storage');
-      return null;
+  await check(PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE).then(
+    async (status) => {
+      if (status === RESULTS.GRANTED) {
+        return RESULTS.GRANTED;
+      } else if (status === RESULTS.DENIED) {
+        return await request(PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE);
+      } else if (status === RESULTS.UNAVAILABLE) {
+        _showAlertUnavailable('Write Storage');
+        return RESULTS.UNAVAILABLE;
+      } else {
+        _showAlertBlocked('Write Storage');
+        return null;
+      }
     }
-  });
+  );
 }
 
 function _showAlertBlocked(message = '') {
@@ -149,7 +151,7 @@ function _showAlertBlocked(message = '') {
         onPress: () => openSettings(),
       },
     ],
-    {cancelable: true},
+    { cancelable: true }
   );
 }
 
@@ -163,6 +165,6 @@ function _showAlertUnavailable(message = '') {
         onPress: () => {},
       },
     ],
-    {cancelable: true},
+    { cancelable: true }
   );
 }

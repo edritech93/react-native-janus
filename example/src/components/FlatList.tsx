@@ -14,7 +14,7 @@ interface IFlatList extends FlatListProps<any> {
 }
 
 export default function FlatList(props: IFlatList) {
-  const {children, style, onLimitUp, onLimitDown, flatListRef, ...restProps} =
+  const { children, style, onLimitUp, onLimitDown, flatListRef, ...restProps } =
     props;
 
   const REF_LIST = React.useRef<any>();
@@ -51,7 +51,8 @@ export default function FlatList(props: IFlatList) {
       scrollEventThrottle={500}
       showsHorizontalScrollIndicator={false}
       showsVerticalScrollIndicator={false}
-      {...restProps}>
+      {...restProps}
+    >
       {children}
     </DefaultFlatList>
   );

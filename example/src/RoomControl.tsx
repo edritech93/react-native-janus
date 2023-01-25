@@ -1,6 +1,6 @@
 import React from 'react';
-import {View, StyleSheet, Button} from 'react-native';
-import {moderateScale} from './libs/scaling';
+import { View, StyleSheet, Button } from 'react-native';
+import { moderateScale } from './libs/scaling';
 
 export default function RoomControl(props) {
   const {
