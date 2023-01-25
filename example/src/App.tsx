@@ -30,7 +30,7 @@ LogBox.ignoreAllLogs();
 let janus = null;
 let pluginLocal = null;
 let tempPublisher = [];
-const ROOM_ID = 2;
+const ROOM_ID = 1234;
 
 export default function Room(props) {
   const profile = {
