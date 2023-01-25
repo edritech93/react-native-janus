@@ -53,8 +53,7 @@ export default class JanusSocket {
 
       this.ws.onmessage = async (e) => {
         try {
-          let message = JSON.parse(e.data);
-
+          const message = JSON.parse(e.data);
           switch (message.janus) {
             // general events
             case 'keepalive':
@@ -107,7 +106,9 @@ export default class JanusSocket {
               await this.onMessage(message);
             }
           }
-        } catch (e) {}
+        } catch (error) {
+          console.log('onMessage Error => ', error);
+        }
       };
 
       this.ws.onerror = (e) => {
@@ -131,9 +132,8 @@ export default class JanusSocket {
       transaction = JanusUtils.randomString(12);
       this.transactions[transaction] = callback;
     }
-
     request.transaction = transaction;
-
+    // console.log('send request => ', request);
     this.ws.send(JSON.stringify(request));
   };
 

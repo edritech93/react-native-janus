@@ -27,9 +27,10 @@ Janus.setDependencies({
 
 LogBox.ignoreAllLogs();
 
-let pluginLocal = null;
 let janus = null;
+let pluginLocal = null;
 let tempPublisher = [];
+const ROOM_ID = 2;
 
 export default function Room(props) {
   const profile = {
@@ -79,7 +80,6 @@ export default function Room(props) {
       await janus.init();
 
       pluginLocal = new JanusVideoRoomPlugin(janus);
-      pluginLocal.setRoomID(1234);
       pluginLocal.setDisplayName(profile.userId);
       pluginLocal.setOnPublishersListener((publishers) => {
         for (let i = 0; i < publishers.length; i++) {
@@ -96,6 +96,7 @@ export default function Room(props) {
 
       await pluginLocal.createPeer();
       await pluginLocal.connect();
+      await pluginLocal.setRoomID(ROOM_ID, true);
       await pluginLocal.join();
       await pluginLocal.publish(stream);
     } catch (error) {
@@ -128,7 +129,7 @@ export default function Room(props) {
   async function _receivePublisher(publisher) {
     try {
       const pluginRemote = new JanusVideoRoomPlugin(janus);
-      pluginRemote.setRoomID(1234);
+      pluginRemote.setRoomID(ROOM_ID);
       pluginRemote.setOnStreamListener((stream) => {
         const arrayUpdate = [...tempPublisher];
         arrayUpdate.push({
@@ -184,11 +185,11 @@ export default function Room(props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'red',
   },
   wrapMainRoom: {
     flex: 1,
     marginBottom: moderateScale(100),
     borderRadius: moderateScale(8),
-    paddingHorizontal: moderateScale(4),
   },
 });

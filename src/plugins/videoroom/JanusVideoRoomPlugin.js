@@ -101,8 +101,28 @@ export default class JanusVideoRoomPlugin extends JanusPlugin {
    *
    * @param {Number} roomID
    */
-  setRoomID = (roomID) => {
-    this.roomID = roomID;
+  setRoomID = async (roomID, isLocal = false) => {
+    if (isLocal) {
+      return new Promise(async (resolve, reject) => {
+        const objExist = await this.sendAsync({
+          request: 'exists',
+          room: roomID,
+        }).catch((error) => reject(error));
+        if (objExist?.plugindata?.data?.exists === false) {
+          await this.sendAsync({
+            request: 'create',
+            room: roomID,
+            permanent: false,
+            description: '',
+            is_private: false,
+          }).catch((error) => reject(error));
+        }
+        this.roomID = roomID;
+        resolve(this.roomID);
+      });
+    } else {
+      this.roomID = roomID;
+    }
   };
 
   /**
@@ -274,7 +294,6 @@ export default class JanusVideoRoomPlugin extends JanusPlugin {
             }
           }
         }
-
         console.log('plugin', 'event', data);
         return;
       }
