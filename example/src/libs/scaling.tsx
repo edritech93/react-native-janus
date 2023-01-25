@@ -1,7 +1,7 @@
-import {Dimensions} from 'react-native';
+import { Dimensions } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 const [shortDimension, longDimension] =
   width < height ? [width, height] : [height, width];
 
@@ -16,9 +16,9 @@ const verticalScale = (size: number) =>
 
 const moderateScale = (
   size: number,
-  factor: number = DeviceInfo.isTablet() ? 0.2 : 0.5,
+  factor: number = DeviceInfo.isTablet() ? 0.2 : 0.5
 ) => {
   return size + (scale(size) - size) * factor;
 };
 
-export {scale, verticalScale, moderateScale};
+export { scale, verticalScale, moderateScale };

@@ -1,4 +1,4 @@
-import {Appearance} from 'react-native';
+import { Appearance } from 'react-native';
 import {
   DefaultTheme as DefaultThemePaper,
   MD3DarkTheme,
@@ -8,8 +8,8 @@ import {
   DefaultTheme as DefaultThemeNav,
   DarkTheme as DarkThemeNav,
 } from '@react-navigation/native';
-import {LabelValueType} from '../types/LabelValueType';
-import {Colors} from '.';
+import { LabelValueType } from '../types/LabelValueType';
+import { Colors } from '.';
 
 export const THEME_ID = {
   SYSTEM: 0,

@@ -7,9 +7,9 @@ import {
   ViewStyle,
   ImageSourcePropType,
 } from 'react-native';
-import {Text} from './Text';
-import {moderateScale} from '../libs/scaling';
-import {Metrics} from '../themes';
+import { Text } from './Text';
+import { moderateScale } from '../libs/scaling';
+import { Metrics } from '../themes';
 
 interface EmptyStateProps {
   image?: ImageSourcePropType | undefined | null;
@@ -18,7 +18,7 @@ interface EmptyStateProps {
 }
 
 const EmptyState = (props: EmptyStateProps) => {
-  const {image = null, label = 'No. Data', style} = props;
+  const { image = null, label = 'No. Data', style } = props;
   return (
     <View style={[styles.container, style]}>
       {image && <Image style={styles.imgStyle} source={image} />}
