@@ -10,7 +10,7 @@ import {
 import { StyleSheet, Text, View, FlatList, Platform } from 'react-native';
 import { Janus, JanusTextRoomPlugin } from 'react-native-janus';
 import { moderateScale } from '../../libs/scaling';
-import { GATEWAY_URL } from '../../constants';
+import { FACE_CAM, GATEWAY_URL } from '../../constants';
 import type { DataChatType } from '../../types/DataChatType';
 
 Janus.setDependencies({
@@ -51,34 +51,34 @@ export default function TextRoom() {
 
   async function initJanus() {
     try {
+      const stream = await _getLocalStream();
+
       janus = new Janus(GATEWAY_URL.DEV);
       janus.setApiSecret('janusrocks');
       await janus.init();
 
       pluginLocal = new JanusTextRoomPlugin(janus);
       pluginLocal.setDisplayName(profile.userId);
-      // pluginLocal.setOnPublishersListener((publishers: []) => {
-      //   for (let i = 0; i < publishers.length; i++) {
-      //     _receivePublisher(publishers[i]);
-      //   }
-      // });
-      // pluginLocal.setOnPublisherJoinedListener((publisher: any) => {
-      //   _receivePublisher(publisher);
-      // });
-      // pluginLocal.setOnPublisherLeftListener((publisherId: string) => {
-      //   _removePublisher(publisherId);
-      // });
-      // pluginLocal.setOnWebRTCUpListener(async () => {});
+      pluginLocal.setOnPublishersListener((publishers: []) => {
+        for (let i = 0; i < publishers.length; i++) {
+          _receivePublisher(publishers[i]);
+        }
+      });
+      pluginLocal.setOnPublisherJoinedListener((publisher: any) => {
+        _receivePublisher(publisher);
+      });
+      pluginLocal.setOnPublisherLeftListener((publisherId: string) => {
+        // _removePublisher(publisherId);
+      });
+      pluginLocal.setOnWebRTCUpListener(async () => {});
 
-      // await pluginLocal.createPeer();
       await pluginLocal.connect();
-      await pluginLocal.setup();
+      await pluginLocal.createPeer();
       await pluginLocal.setRoomID(ROOM_ID, true);
-
-      console.log('pluginLocal => ', pluginLocal.setup);
-
-      // await pluginLocal.join();
+      // await pluginLocal.setupTextRoom();
+      await pluginLocal.join();
       // await pluginLocal.publish(stream);
+      console.log('pluginLocal => ', pluginLocal);
     } catch (error) {
       // props.showAlert({ message: error, type: 'danger' });
     }
@@ -90,7 +90,51 @@ export default function TextRoom() {
     }
   }
 
-  function _onSend() {}
+  function _getLocalStream() {
+    return new Promise(async function (resolve, reject) {
+      try {
+        const stream = await mediaDevices.getUserMedia({
+          audio: true,
+          video: {
+            facingMode: FACE_CAM.FRONT,
+          },
+        });
+        resolve(stream);
+      } catch (error) {
+        reject('No Local Stream');
+      }
+    });
+  }
+
+  async function _receivePublisher(publisher: any) {
+    try {
+      const pluginRemote = new JanusTextRoomPlugin(janus);
+      pluginRemote.setRoomID(ROOM_ID);
+      pluginRemote.setOnStreamListener((stream: any) => {
+        const arrayUpdate = [...tempPublisher];
+        arrayUpdate.push({
+          publisher: publisher,
+          stream: stream,
+        });
+        // setDataPublisher(arrayUpdate);
+        tempPublisher = arrayUpdate;
+      });
+      await pluginRemote.createPeer();
+      await pluginRemote.connect();
+      await pluginRemote.receive(pluginLocal.getUserPrivateID(), publisher);
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  function _onSend() {
+    // let message = {
+    //   textroom: 'message',
+    //   transaction: Janus.randomString(12),
+    //   room: myroom,
+    //   text: data,
+    // };
+  }
 
   const _renderItem = ({ item }: { item: DataChatType }) => (
     <View style={styles.wrapItem}>
