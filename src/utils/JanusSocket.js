@@ -44,7 +44,7 @@ export default class JanusSocket {
               this.setKeepAliveTimeout();
               resolve();
             } else {
-              //todo: send error
+              //TODO: send error
               reject();
             }
           }
@@ -78,7 +78,6 @@ export default class JanusSocket {
                 return await this.plugins[message.sender].onMessage(message);
               }
             }
-
             // transaction responses
             case 'success':
             case 'error': {
@@ -90,7 +89,6 @@ export default class JanusSocket {
               }
             }
           }
-
           if (message.janus && message.janus !== 'ack' && message.transaction) {
             const { transaction } = message;
             await this.transactions[transaction](message);
@@ -107,7 +105,7 @@ export default class JanusSocket {
             }
           }
         } catch (error) {
-          console.log('onMessage Error => ', error);
+          JanusUtils.log('socket_onmessage_error', error);
         }
       };
 
@@ -133,7 +131,7 @@ export default class JanusSocket {
       this.transactions[transaction] = callback;
     }
     request.transaction = transaction;
-    // console.log('send request => ', request);
+    // JanusUtils.log('send_socket', request);
     this.ws.send(JSON.stringify(request));
   };
 
@@ -157,9 +155,7 @@ export default class JanusSocket {
           janus: 'keepalive',
           session_id: this.sessionID,
         },
-        (response) => {
-          // JanusUtils.log('keepAlive', response.session_id);
-        }
+        (response) => JanusUtils.log('keep_alive_janus', response.session_id)
       );
     }
   };

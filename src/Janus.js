@@ -1,4 +1,5 @@
 import JanusSocket from './utils/JanusSocket';
+import JanusUtils from './utils/JanusUtils';
 
 export default class Janus {
   /**
@@ -42,22 +43,22 @@ export default class Janus {
 
   init = async () => {
     await this.socket.connect();
+    JanusUtils.log('init_janus', 'success');
   };
 
   destroy = async () => {
     try {
-      const destroySessionResponse = await this.socket.sendAsync({
+      await this.socket.sendAsync({
         janus: 'destroy',
         session_id: this.socket.sessionID,
       });
     } catch (e) {
-      console.error('destroy janus', e);
+      JanusUtils.log('destroy_janus', e);
     }
-
     try {
       await this.socket.disconnect();
     } catch (e) {
-      console.error('destroy socket', e);
+      JanusUtils.log('destroy_socket', e);
     }
   };
 

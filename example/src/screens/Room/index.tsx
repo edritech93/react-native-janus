@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, LogBox, Platform } from 'react-native';
+import { View, StyleSheet, Platform } from 'react-native';
 import {
   mediaDevices,
   MediaStream,
@@ -25,11 +25,9 @@ Janus.setDependencies({
   MediaStream,
 });
 
-LogBox.ignoreAllLogs();
-
-let janus = null;
-let pluginLocal = null;
-let tempPublisher = [];
+let janus: any = null;
+let pluginLocal: any = null;
+let tempPublisher: any[] = [];
 const ROOM_ID = 1234;
 
 interface IRoom {
@@ -43,10 +41,10 @@ export default function Room(props: IRoom) {
   };
   const isPrivate = false;
 
-  const [userTalk, setUserTalk] = useState(null);
-  const [dataPublisher, setDataPublisher] = useState([]);
-  const [isHaveVideo, setIsHaveVideo] = useState(true);
-  const [isHaveAudio, setIsHaveAudio] = useState(true);
+  const [userTalk, setUserTalk] = useState<any>(null);
+  const [dataPublisher, setDataPublisher] = useState<any[]>([]);
+  const [isHaveVideo, setIsHaveVideo] = useState<boolean>(true);
+  const [isHaveAudio, setIsHaveAudio] = useState<boolean>(true);
 
   useEffect(() => {
     const _loadPermission = async () => {
@@ -61,7 +59,7 @@ export default function Room(props: IRoom) {
     };
     _loadPermission();
     return () => {
-      _dismisJanus();
+      _dismissJanus();
     };
   }, []);
 
@@ -85,15 +83,15 @@ export default function Room(props: IRoom) {
 
       pluginLocal = new JanusVideoRoomPlugin(janus);
       pluginLocal.setDisplayName(profile.userId);
-      pluginLocal.setOnPublishersListener((publishers) => {
+      pluginLocal.setOnPublishersListener((publishers: []) => {
         for (let i = 0; i < publishers.length; i++) {
           _receivePublisher(publishers[i]);
         }
       });
-      pluginLocal.setOnPublisherJoinedListener((publisher) => {
+      pluginLocal.setOnPublisherJoinedListener((publisher: any) => {
         _receivePublisher(publisher);
       });
-      pluginLocal.setOnPublisherLeftListener((publisherId) => {
+      pluginLocal.setOnPublisherLeftListener((publisherId: string) => {
         _removePublisher(publisherId);
       });
       pluginLocal.setOnWebRTCUpListener(async () => {});
@@ -108,7 +106,7 @@ export default function Room(props: IRoom) {
     }
   }
 
-  async function _dismisJanus() {
+  async function _dismissJanus() {
     if (janus) {
       await janus.destroy();
     }
@@ -130,11 +128,11 @@ export default function Room(props: IRoom) {
     });
   }
 
-  async function _receivePublisher(publisher) {
+  async function _receivePublisher(publisher: any) {
     try {
       const pluginRemote = new JanusVideoRoomPlugin(janus);
       pluginRemote.setRoomID(ROOM_ID);
-      pluginRemote.setOnStreamListener((stream) => {
+      pluginRemote.setOnStreamListener((stream: any) => {
         const arrayUpdate = [...tempPublisher];
         arrayUpdate.push({
           publisher: publisher,
@@ -151,7 +149,7 @@ export default function Room(props: IRoom) {
     }
   }
 
-  async function _removePublisher(publisherId) {
+  async function _removePublisher(publisherId: string) {
     try {
       const arrayUpdate = [...tempPublisher];
       arrayUpdate.filter(
@@ -189,7 +187,6 @@ export default function Room(props: IRoom) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'red',
   },
   wrapMainRoom: {
     flex: 1,

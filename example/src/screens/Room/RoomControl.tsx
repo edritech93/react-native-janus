@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, StyleSheet, Button } from 'react-native';
+import { View, StyleSheet } from 'react-native';
+import { Button } from 'react-native-paper';
 import { moderateScale } from '../../libs/scaling';
 
 interface IRoomControl {}
@@ -37,10 +38,18 @@ export default function RoomControl(props: IRoomControl) {
 
   return (
     <View style={styles.container}>
-      <Button title={'AUDIO'} onPress={_onPressAudio} />
-      <Button title={'VIDEO'} onPress={_onPressVideo} />
-      <Button title={'PHONE'} onPress={() => {}} />
-      <Button title={'SWITCH'} onPress={_onSwitchCamera} />
+      <Button mode={'contained'} onPress={_onPressAudio}>
+        {'AUDIO'}
+      </Button>
+      <Button mode={'contained'} onPress={_onPressVideo}>
+        {'VIDEO'}
+      </Button>
+      <Button mode={'contained'} onPress={() => {}}>
+        {'PHONE'}
+      </Button>
+      <Button mode={'contained'} onPress={_onSwitchCamera}>
+        {'SWITCH'}
+      </Button>
     </View>
   );
 }

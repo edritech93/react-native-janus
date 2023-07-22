@@ -1,12 +1,12 @@
-import JanusVideoRoomPublisher from './JanusVideoRoomPublisher';
-import JanusPlugin from './../../utils/JanusPlugin';
-import Janus from './../../Janus';
+import JanusTextRoomPublisher from './JanusTextRoomPublisher';
+import JanusPlugin from '../../utils/JanusPlugin';
+import Janus from '../../Janus';
 import JanusUtils from '../../utils/JanusUtils';
 
-export default class JanusVideoRoomPlugin extends JanusPlugin {
+export default class JanusTextRoomPlugin extends JanusPlugin {
   /**
    * Array of video room publishers
-   * @type {JanusVideoRoomPublisher[]}
+   * @type {JanusTextRoomPublisher[]}
    */
   publishers = null;
 
@@ -19,7 +19,7 @@ export default class JanusVideoRoomPlugin extends JanusPlugin {
   /**
    *
    * @callback onPublishersListener
-   * @param {JanusVideoRoomPublisher[]} publishers
+   * @param {JanusTextRoomPublisher[]} publishers
    */
   /**
    *
@@ -29,7 +29,7 @@ export default class JanusVideoRoomPlugin extends JanusPlugin {
   /**
    *
    * @callback onPublisherJoinedListener
-   * @param {JanusVideoRoomPublisher} publisher
+   * @param {JanusTextRoomPublisher} publisher
    */
   /**
    *
@@ -49,7 +49,7 @@ export default class JanusVideoRoomPlugin extends JanusPlugin {
   /**
    *
    * @callback onPublisherUpdatedListener
-   * @param {JanusVideoRoomPublisher} publisher
+   * @param {JanusTextRoomPublisher} publisher
    */
   /**
    *
@@ -82,7 +82,7 @@ export default class JanusVideoRoomPlugin extends JanusPlugin {
    * @param {Janus} janus
    */
   constructor(janus) {
-    super('janus.plugin.videoroom', janus);
+    super('janus.plugin.textroom', janus);
 
     this.userID = null;
     this.userPrivateID = null;
@@ -109,7 +109,7 @@ export default class JanusVideoRoomPlugin extends JanusPlugin {
           request: 'exists',
           room: roomID,
         }).catch((error) => reject(error));
-        JanusUtils.log('check_exist_video_room_id', objExist);
+        JanusUtils.log('set_room_id', objExist);
         if (objExist?.plugindata?.data?.exists === false) {
           await this.sendAsync({
             request: 'create',
@@ -137,7 +137,7 @@ export default class JanusVideoRoomPlugin extends JanusPlugin {
 
   /**
    *
-   * @returns {JanusVideoRoomPublisher[]}
+   * @returns {JanusTextRoomPublisher[]}
    */
   getPublishers = () => {
     return this.publishers;
@@ -282,7 +282,7 @@ export default class JanusVideoRoomPlugin extends JanusPlugin {
               return;
             } else if (typeof data.publishers !== 'undefined') {
               let newPublishers = data.publishers.map(
-                (publisherData) => new JanusVideoRoomPublisher(publisherData)
+                (publisherData) => new JanusTextRoomPublisher(publisherData)
               );
               for (let i = 0; i < newPublishers.length; i++) {
                 if (
@@ -352,6 +352,17 @@ export default class JanusVideoRoomPlugin extends JanusPlugin {
 
   openVideo() {}
 
+  setupTextRoom = async () => {
+    try {
+      const setupResponse = await this.sendAsync({
+        request: 'setup',
+      });
+      JanusUtils.log('setup_text_room', setupResponse);
+    } catch (error) {
+      JanusUtils.log('setup_text_room_error', error);
+    }
+  };
+
   /**
    *
    * @returns {Promise<void>}
@@ -359,43 +370,53 @@ export default class JanusVideoRoomPlugin extends JanusPlugin {
   join = async () => {
     try {
       let joinResponse = await this.sendAsync({
-        request: 'join',
+        // request: 'join',
+        // room: this.roomID,
+        // display: this.displayName,
+        // ptype: 'publisher',
+
+        textroom: 'join',
         room: this.roomID,
         display: this.displayName,
-        ptype: 'publisher',
+        username: this.displayName,
       });
+      console.log('------------------------------------');
+      console.log(joinResponse);
+      console.log('------------------------------------');
 
-      if (
-        joinResponse.janus === 'event' &&
-        joinResponse.plugindata &&
-        joinResponse.plugindata.data
-      ) {
-        let data = joinResponse.plugindata.data;
-        if (data.videoroom === 'joined') {
-          this.userID = data.id;
-          this.userPrivateID = data.private_id;
-          this.publishers = data.publishers.map(
-            (publisherData) => new JanusVideoRoomPublisher(publisherData)
-          );
+      // if (
+      //   joinResponse.janus === 'event' &&
+      //   joinResponse.plugindata &&
+      //   joinResponse.plugindata.data
+      // ) {
+      //   let data = joinResponse.plugindata.data;
+      //   if (data.videoroom === 'joined') {
+      //     this.userID = data.id;
+      //     this.userPrivateID = data.private_id;
+      //     this.publishers = data.publishers.map(
+      //       (publisherData) => new JanusTextRoomPublisher(publisherData)
+      //     );
 
-          if (
-            this.onPublishersListener != null &&
-            typeof this.onPublishersListener === 'function'
-          ) {
-            this.onPublishersListener(this.publishers);
-          }
+      //     if (
+      //       this.onPublishersListener != null &&
+      //       typeof this.onPublishersListener === 'function'
+      //     ) {
+      //       this.onPublishersListener(this.publishers);
+      //     }
 
-          return;
-        } else {
-          console.error('join', joinResponse);
-        }
-      } else {
-        console.error('join', joinResponse);
-      }
-    } catch (e) {
-      console.error('join', e);
+      //     return;
+      //   } else {
+      //     console.error('join', joinResponse);
+      //   }
+      // } else {
+      //   console.error('join', joinResponse);
+      // }
+    } catch (error) {
+      JanusUtils.log('join_text_room', error);
     }
   };
+
+  setup = async () => {};
 
   /**
    *
@@ -410,14 +431,19 @@ export default class JanusVideoRoomPlugin extends JanusPlugin {
    */
   publish = async (stream, audio = true, video = true) => {
     try {
-      JanusUtils.log('publish_video_room', 'started');
+      console.log('joined to room.');
+
       this.pc.addStream(stream);
+
       let offer = await this.pc.createOffer({
         offerToReceiveAudio: false,
         offerToReceiveVideo: false,
       });
+
       await this.pc.setLocalDescription(offer);
+
       // offer.sdp = offer.sdp.replace(/a=extmap:(\d+) urn:3gpp:video-orientation\n?/, '');
+
       let response = await this.sendAsyncWithJsep(
         {
           request: 'configure',
@@ -430,6 +456,7 @@ export default class JanusVideoRoomPlugin extends JanusPlugin {
           sdp: offer.sdp,
         }
       );
+
       await this.pc.setRemoteDescription(
         new Janus.RTCSessionDescription({
           sdp: response.jsep.sdp,
@@ -437,12 +464,13 @@ export default class JanusVideoRoomPlugin extends JanusPlugin {
         })
       );
       this.isRemoteDescriptionSet = true;
+
       for (const candidate of this.cachedCandidates) {
         await this.pc.addIceCandidate(candidate);
       }
       this.cachedCandidates = [];
-    } catch (error) {
-      JanusUtils.log('publish_video_room', error);
+    } catch (e) {
+      console.log(e);
     }
   };
 
@@ -473,7 +501,7 @@ export default class JanusVideoRoomPlugin extends JanusPlugin {
   /**
    *
    * @param privateID
-   * @param {JanusVideoRoomPublisher} publisher
+   * @param {JanusTextRoomPublisher} publisher
    * @returns {Promise<void>}
    */
   receive = async (privateID, publisher, audio = true, video = true) => {

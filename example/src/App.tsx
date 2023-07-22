@@ -1,6 +1,8 @@
 import React from 'react';
-import { StyleSheet, SafeAreaView, StatusBar } from 'react-native';
+import { StyleSheet, SafeAreaView, StatusBar, LogBox } from 'react-native';
 import StackNavigation from './Router';
+
+LogBox.ignoreAllLogs();
 
 const App = () => {
   return (

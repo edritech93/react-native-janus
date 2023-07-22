@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Button, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
+import { Button } from 'react-native-paper';
 import { moderateScale } from '../../libs/scaling';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackType } from '../../types/RootStackType';
@@ -11,12 +12,16 @@ export default function Home(props: IHome) {
 
   return (
     <View style={styles.container}>
-      <Button title={'ROOM'} onPress={() => navigation.navigate('Room')} />
+      <Button mode={'contained'} onPress={() => navigation.navigate('Room')}>
+        {'Video Room'}
+      </Button>
       <View style={styles.spacing} />
       <Button
-        title={'DATA CHANNEL'}
-        onPress={() => navigation.navigate('DataChannel')}
-      />
+        mode={'contained'}
+        onPress={() => navigation.navigate('TextRoom')}
+      >
+        {'Text Room'}
+      </Button>
     </View>
   );
 }
