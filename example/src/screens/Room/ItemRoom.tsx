@@ -1,9 +1,14 @@
 import React from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
-import { moderateScale } from './libs/scaling';
+import { moderateScale } from '../../libs/scaling';
 import { RTCView } from 'react-native-webrtc';
 
-export default function ItemRoom(props) {
+interface IItemRoom {
+  item: any;
+  onPress: () => void;
+}
+
+export default function ItemRoom(props: IItemRoom) {
   const { item, onPress } = props;
   return (
     <TouchableOpacity style={styles.container} onPress={onPress}>

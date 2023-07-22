@@ -1,11 +1,13 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { FlatList, EmptyState } from './components';
-import { moderateScale } from './libs/scaling';
-import { Metrics } from './themes';
+import { FlatList, EmptyState } from '../../components';
+import { moderateScale } from '../../libs/scaling';
+import { Metrics } from '../../themes';
 import ItemRoom from './ItemRoom';
 
-export default function RoomThumbnail(props) {
+interface IRoomThumbnail {}
+
+export default function RoomThumbnail(props: IRoomThumbnail) {
   const {
     data = [],
     containerStyle,

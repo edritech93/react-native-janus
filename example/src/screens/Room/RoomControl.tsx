@@ -1,8 +1,10 @@
 import React from 'react';
 import { View, StyleSheet, Button } from 'react-native';
-import { moderateScale } from './libs/scaling';
+import { moderateScale } from '../../libs/scaling';
 
-export default function RoomControl(props) {
+interface IRoomControl {}
+
+export default function RoomControl(props: IRoomControl) {
   const {
     isHaveVideo,
     setIsHaveVideo,

@@ -1,9 +1,11 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import { RTCView } from 'react-native-webrtc';
-import { Metrics } from './themes';
+import { Metrics } from '../../themes';
 
-export default function RoomTalking(props) {
+interface IRoomTalking {}
+
+export default function RoomTalking(props: IRoomTalking) {
   const { user, isPrivate = false } = props;
   const heightStyle = {
     // height: isPrivate ? Metrics.screenHeight : '80%',
